@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_21_160941) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_21_162118) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -39,6 +39,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_21_160941) do
     t.index ["post_id", "user_id"], name: "index_likes_on_post_id_and_user_id", unique: true
     t.index ["post_id"], name: "index_likes_on_post_id"
     t.index ["user_id"], name: "index_likes_on_user_id"
+  end
+
+  create_table "line_items", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "order_id", null: false
+    t.bigint "product_id", null: false
+    t.integer "quantity", default: 1
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_line_items_on_order_id"
+    t.index ["product_id"], name: "index_line_items_on_product_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "status", default: "pending"
+    t.integer "total_cents", default: 0
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
   create_table "posts", force: :cascade do |t|
@@ -90,6 +109,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_21_160941) do
   add_foreign_key "comments", "users"
   add_foreign_key "likes", "posts"
   add_foreign_key "likes", "users"
+  add_foreign_key "line_items", "orders"
+  add_foreign_key "line_items", "products"
+  add_foreign_key "orders", "users"
   add_foreign_key "posts", "categories"
   add_foreign_key "posts", "users"
   add_foreign_key "taggings", "posts"
