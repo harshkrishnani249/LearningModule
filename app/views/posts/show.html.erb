@@ -1,0 +1,14 @@
+<!-- app/views/posts/show.html.erb -->
+<% cache @post do %>
+  <h1><%= @post.title %></h1>
+  <p><%= @post.body %></p>
+
+  <h3>Comments</h3>
+  <% @post.comments.each do |comment| %>
+    <% cache comment do %>
+      <div style="margin-left:20px; border-left:2px solid #eee; padding-left:10px;">
+        <strong><%= comment.user.name %>:</strong> <%= comment.body %>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>
