@@ -14,4 +14,17 @@ class Post < ApplicationRecord
       comments.count * 10 + Like.where(post: self).count * 5
     end
   end
+
+  def cached_post_data
+    key = "post_#{id}_data"
+    cached = Rails.cache.read(key)
+
+    if cached
+      REDIS.incr("cache_hits")
+    else
+      REDIS.incr("cache_misses")
+    end
+
+    Rails.cache.fetch(key, expires_in: 1.hour) { { title: title, author: user.name } }
+  end
 end
